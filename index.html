@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台南兩天一夜</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body[data-theme="dark"] {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .container {
+            background: #222222;
+            color: #ffffff;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        body[data-theme="dark"] .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        body[data-theme="dark"] .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .header {
+            background: linear-gradient(135deg, #333333 0%, #1a1a1a 100%);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+        }
+
+        .today-highlight {
+            background: linear-gradient(135deg, #ffd89b 0%, #ffb366 100%);
+            margin: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(255, 179, 102, 0.2);
+            transition: background 0.3s ease;
+        }
+
+        body[data-theme="dark"] .today-highlight {
+            background: linear-gradient(135deg, #444444 0%, #333333 100%);
+        }
+
+        .highlight-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 12px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .highlight-title {
+            color: #ffffff;
+        }
+
+        .highlight-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #333;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .highlight-content {
+            background: #222222;
+            color: #ffffff;
+        }
+
+        .highlight-content p {
+            margin: 0;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .day-section {
+            margin-bottom: 30px;
+        }
+
+        .day-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #667eea;
+            transition: color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .day-title {
+            color: #8899ff;
+            border-bottom-color: #8899ff;
+        }
+
+        .stop {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .stop {
+            background: #333333;
+            border-left-color: #666666;
+            color: #ffffff;
+        }
+
+        .stop-time {
+            font-size: 14px;
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 4px;
+            transition: color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .stop-time {
+            color: #8899ff;
+        }
+
+        .stop-place {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .stop-place {
+            color: #ffffff;
+        }
+
+        .place-icon {
+            width: 32px;
+            height: 32px;
+            flex-shrink: 0;
+        }
+
+        .stop-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            transition: color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .stop-desc {
+            color: #cccccc;
+        }
+
+        .reminder-section {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 16px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .reminder-section {
+            background: #444433;
+            border-left-color: #888855;
+        }
+
+        .reminder-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 12px;
+            transition: color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .reminder-title {
+            color: #ffdd99;
+        }
+
+        .reminder-item {
+            font-size: 14px;
+            color: #856404;
+            line-height: 1.8;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .reminder-item {
+            color: #ddddaa;
+        }
+
+        .reminder-item strong {
+            color: #664d03;
+            transition: color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .reminder-item strong {
+            color: #ffdd99;
+        }
+
+        .footer {
+            background: #f8f9ff;
+            padding: 20px;
+            text-align: center;
+            color: #999;
+            font-size: 12px;
+            border-top: 1px solid #e0e0e0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .footer {
+            background: #1a1a1a;
+            color: #888888;
+            border-top-color: #333333;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+
+            .header {
+                padding: 24px 16px;
+            }
+
+            .header h1 {
+                font-size: 28px;
+            }
+
+            .content {
+                padding: 16px;
+            }
+
+            .stop {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" aria-label="切換深色模式">🌙</button>
+
+    <div class="container">
+        <div class="header">
+            <h1>🏖️ 放風的假期</h1>
+            <p>台南兩天一夜 ✨</p>
+        </div>
+
+        <div class="today-highlight">
+            <div class="highlight-title">📍 今日重點</div>
+            <div class="highlight-content" id="todayContent">
+                <p id="todaySchedule">點進來看詳細行程 👇</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- 第一天 -->
+            <div class="day-section">
+                <div class="day-title">🌅 第一天</div>
+
+                <div class="stop">
+                    <div class="stop-time">⏰ 上午 10:00</div>
+                    <div class="stop-place">
+                        <svg class="place-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 火車站建築 -->
+                            <rect x="15" y="45" width="70" height="40" fill="#d4664e" rx="4"/>
+                            <rect x="20" y="50" width="12" height="25" fill="#8b4513"/>
+                            <rect x="38" y="50" width="12" height="25" fill="#8b4513"/>
+                            <rect x="56" y="50" width="12" height="25" fill="#8b4513"/>
+                            <rect x="74" y="50" width="12" height="25" fill="#8b4513"/>
+                            <!-- 屋頂 -->
+                            <polygon points="10,45 50,20 90,45" fill="#c9513a"/>
+                            <!-- 時鐘 -->
+                            <circle cx="50" cy="35" r="8" fill="#f4d03f" stroke="#333" stroke-width="1"/>
+                            <line x1="50" y1="31" x2="50" y2="28" stroke="#333" stroke-width="1.5"/>
+                            <line x1="53" y1="35" x2="56" y2="35" stroke="#333" stroke-width="1.5"/>
+                        </svg>
+                        台南火車站
+                    </div>
+                    <div class="stop-desc">集合出發，開始台南美食之旅。</div>
+                </div>
+
+                <div class="stop">
+                    <div class="stop-time">⏰ 上午 11:30</div>
+                    <div class="stop-place">
+                        <svg class="place-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 古建築群 -->
+                            <rect x="10" y="40" width="20" height="45" fill="#c9913f" rx="2"/>
+                            <polygon points="10,40 20,25 30,40" fill="#a67035"/>
+                            <rect x="35" y="35" width="22" height="50" fill="#d4a373" rx="2"/>
+                            <polygon points="35,35 46,18 57,35" fill="#b88956"/>
+                            <rect x="60" y="42" width="18" height="43" fill="#c9913f" rx="2"/>
+                            <polygon points="60,42 69,28 78,42" fill="#a67035"/>
+                            <!-- 窗戶 -->
+                            <rect x="14" y="50" width="4" height="4" fill="#8b6f47"/>
+                            <rect x="14" y="60" width="4" height="4" fill="#8b6f47"/>
+                            <rect x="39" y="50" width="5" height="5" fill="#8b6f47"/>
+                            <rect x="39" y="65" width="5" height="5" fill="#8b6f47"/>
+                            <rect x="64" y="52" width="4" height="4" fill="#8b6f47"/>
+                            <rect x="64" y="65" width="4" height="4" fill="#8b6f47"/>
+                        </svg>
+                        安平古街
+                    </div>
+                    <div class="stop-desc">漫步古街，品嚐傳統小吃，欣賞懷舊建築。</div>
+                </div>
+
+                <div class="stop">
+                    <div class="stop-time">⏰ 下午 13:30</div>
+                    <div class="stop-place">
+                        <svg class="place-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 碗 -->
+                            <ellipse cx="50" cy="45" rx="25" ry="8" fill="#e8d4c4"/>
+                            <path d="M 25 45 Q 25 60 50 65 Q 75 60 75 45" fill="#f4dcc4" stroke="#d4a373" stroke-width="1.5"/>
+                            <!-- 筷子 -->
+                            <line x1="35" y1="30" x2="40" y2="55" stroke="#8b6f47" stroke-width="2" stroke-linecap="round"/>
+                            <line x1="65" y1="25" x2="60" y2="55" stroke="#8b6f47" stroke-width="2" stroke-linecap="round"/>
+                            <!-- 食物 -->
+                            <circle cx="50" cy="50" r="6" fill="#ff9999"/>
+                            <circle cx="45" cy="48" r="4" fill="#ffbb99"/>
+                            <circle cx="55" cy="52" r="4" fill="#ffbb99"/>
+                        </svg>
+                        安平老街餐廳
+                    </div>
+                    <div class="stop-desc">享用在地海鮮料理與特色台南小食。</div>
+                </div>
+
+                <div class="stop">
+                    <div class="stop-time">⏰ 下午 15:00</div>
+                    <div class="stop-place">
+                        <svg class="place-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 小碟子 -->
+                            <ellipse cx="50" cy="50" rx="22" ry="8" fill="#f5deb3"/>
+                            <path d="M 28 50 Q 28 58 50 62 Q 72 58 72 50" fill="#ffeaa7" stroke="#d4a373" stroke-width="1"/>
+                            <!-- 豆皮 -->
+                            <rect x="35" y="40" width="30" height="12" fill="#d4a574" rx="2"/>
+                            <path d="M 35 45 Q 37 44 40 45" stroke="#b8956a" stroke-width="1" fill="none"/>
+                            <path d="M 45 44 Q 48 43 52 44" stroke="#b8956a" stroke-width="1" fill="none"/>
+                            <path d="M 58 45 Q 61 44 65 45" stroke="#b8956a" stroke-width="1" fill="none"/>
+                            <!-- 蔥段 -->
+                            <line x1="40" y1="35" x2="42" y2="40" stroke="#6ba043" stroke-width="1.5"/>
+                            <line x1="55" y1="34" x2="57" y2="40" stroke="#6ba043" stroke-width="1.5"/>
+                        </svg>
+                        安平豆皮店
+                    </div>
+                    <div class="stop-desc">品嚐道地的台南豆皮，咬下去香到不行。</div>
+                </div>
+
+                <div class="stop">
+                    <div class="stop-time">⏰ 晚上 17:30</div>
+                    <div class="stop-place">
+                        <svg class="place-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 地平線 -->
+                            <line x1="0" y1="55" x2="100" y2="55" stroke="#d4a574" stroke-width="3"/>
+                            <!-- 夕陽 -->
+                            <circle cx="50" cy="45" r="18" fill="#ff9944"/>
+                            <circle cx="50" cy="45" r="15" fill="#ffb347"/>
+                            <!-- 天空漸層效果 -->
+                            <rect x="0" y="0" width="100" height="45" fill="none"/>
+                            <circle cx="50" cy="40" r="3" fill="#ffdd99" opacity="0.7"/>
+                            <!-- 雲彩 -->
+                            <path d="M 20 25 Q 25 20 35 22 Q 38 15 45 18 Q 48 12 55 15 Q 60 10 68 16 Q 75 12 80 20"
+                                  fill="#ffd4a3" stroke="none" opacity="0.8"/>
+                        </svg>
+                        夕陽餐廳
+                    </div>
+                    <div class="stop-desc">眺望美麗夕陽，享受浪漫的晚餐氛圍。</div>
+                </div>
+            </div>
+
+            <!-- 第二天 -->
+            <div class="day-section">
+                <div class="day-title">☀️ 第二天</div>
+
+                <div class="stop">
+                    <div class="stop-time">⏰ 早上 08:00</div>
+                    <div class="stop-place">
+                        <svg class="place-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 盤子 -->
+                            <circle cx="50" cy="50" r="20" fill="#f5deb3" stroke="#d4a373" stroke-width="1"/>
+                            <ellipse cx="50" cy="48" rx="18" ry="5" fill="#ffeaa7" opacity="0.6"/>
+                            <!-- 麵條 -->
+                            <path d="M 38 50 Q 45 48 52 50 Q 58 52 65 50" stroke="#d4a574" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            <path d="M 38 55 Q 46 53 54 55 Q 62 57 65 55" stroke="#d4a574" stroke-width="2" fill="none" stroke-linecap="round"/>
+                            <!-- 滷蛋 -->
+                            <circle cx="42" cy="48" r="4" fill="#8b4513"/>
+                            <circle cx="58" cy="52" r="4" fill="#8b4513"/>
+                            <!-- 勺子 -->
+                            <path d="M 30 65 L 28 70 Q 28 73 32 73 Q 36 73 36 70 L 35 65" fill="#c0a080" stroke="#8b6f47" stroke-width="1"/>
+                        </svg>
+                        台南早餐店
+                    </div>
+                    <div class="stop-desc">享用台南特色早餐，開啟活力的一天。</div>
+                </div>
+
+                <div class="stop">
+                    <div class="stop-time">⏰ 上午 09:30</div>
+                    <div class="stop-place">
+                        <svg class="place-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 主殿屋頂 -->
+                            <polygon points="25,55 50,30 75,55" fill="#c9513a"/>
+                            <polygon points="25,55 50,35 75,55" fill="#d4664e"/>
+                            <!-- 殿堂 -->
+                            <rect x="20" y="55" width="60" height="30" fill="#8b4513" rx="2"/>
+                            <!-- 柱子 -->
+                            <rect x="28" y="55" width="5" height="30" fill="#6b3410"/>
+                            <rect x="46" y="55" width="5" height="30" fill="#6b3410"/>
+                            <rect x="64" y="55" width="5" height="30" fill="#6b3410"/>
+                            <!-- 門窗 -->
+                            <rect x="35" y="65" width="8" height="12" fill="#ffd700" stroke="#8b4513" stroke-width="0.5"/>
+                            <rect x="56" y="65" width="8" height="12" fill="#ffd700" stroke="#8b4513" stroke-width="0.5"/>
+                            <!-- 簷角裝飾 -->
+                            <circle cx="20" cy="52" r="3" fill="#ffd700"/>
+                            <circle cx="80" cy="52" r="3" fill="#ffd700"/>
+                        </svg>
+                        孔廟與古蹟群
+                    </div>
+                    <div class="stop-desc">探訪全臺首學，感受古都歷史風韻。</div>
+                </div>
+
+                <div class="stop">
+                    <div class="stop-time">⏰ 中午 12:00</div>
+                    <div class="stop-place">
+                        <svg class="place-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 鍋子 -->
+                            <ellipse cx="50" cy="50" rx="22" ry="10" fill="#d4a373"/>
+                            <path d="M 28 50 Q 28 58 50 62 Q 72 58 72 50" fill="#e8c49d" stroke="#b8956a" stroke-width="1.5"/>
+                            <!-- 把手 -->
+                            <path d="M 72 48 Q 80 45 80 50" fill="none" stroke="#b8956a" stroke-width="2"/>
+                            <!-- 食材 -->
+                            <circle cx="40" cy="48" r="5" fill="#ff9999"/>
+                            <circle cx="50" cy="50" r="5" fill="#ffb366"/>
+                            <circle cx="60" cy="47" r="5" fill="#ffdd99"/>
+                            <!-- 湯汁 -->
+                            <ellipse cx="50" cy="50" rx="20" ry="8" fill="#d4a574" opacity="0.4"/>
+                        </svg>
+                        老街美食餐廳
+                    </div>
+                    <div class="stop-desc">品嚐台南名菜與在地特色小吃。</div>
+                </div>
+
+                <div class="stop">
+                    <div class="stop-time">⏰ 下午 14:30</div>
+                    <div class="stop-place">
+                        <svg class="place-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 調色盤 -->
+                            <ellipse cx="50" cy="55" rx="25" ry="18" fill="#e8d4c4" stroke="#b8956a" stroke-width="1.5"/>
+                            <!-- 調色盤孔洞/顏色 -->
+                            <circle cx="35" cy="45" r="5" fill="#ff6b6b"/>
+                            <circle cx="50" cy="38" r="5" fill="#ffd93d"/>
+                            <circle cx="65" cy="45" r="5" fill="#6bcf7f"/>
+                            <circle cx="40" cy="60" r="5" fill="#4d96ff"/>
+                            <circle cx="60" cy="60" r="5" fill="#d468ff"/>
+                            <circle cx="50" cy="70" r="5" fill="#ff9a56"/>
+                            <!-- 筆 -->
+                            <line x1="20" y1="35" x2="25" y2="70" stroke="#8b6f47" stroke-width="2"/>
+                            <circle cx="22" cy="33" r="2.5" fill="#ff6b6b"/>
+                        </svg>
+                        台南文創園區
+                    </div>
+                    <div class="stop-desc">逛逛文創小店，挑選獨特紀念品帶回家。</div>
+                </div>
+
+                <div class="stop">
+                    <div class="stop-time">⏰ 下午 16:30</div>
+                    <div class="stop-place">
+                        <svg class="place-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 火車 -->
+                            <rect x="20" y="48" width="35" height="18" fill="#d4664e" rx="2"/>
+                            <circle cx="30" cy="68" r="6" fill="#333"/>
+                            <circle cx="48" cy="68" r="6" fill="#333"/>
+                            <rect x="58" y="48" width="25" height="18" fill="#c9513a" rx="2"/>
+                            <circle cx="68" cy="68" r="5" fill="#333"/>
+                            <!-- 車窗 -->
+                            <rect x="26" y="52" width="6" height="6" fill="#87ceeb"/>
+                            <rect x="36" y="52" width="6" height="6" fill="#87ceeb"/>
+                            <rect x="62" y="52" width="6" height="6" fill="#87ceeb"/>
+                            <!-- 煙囪 -->
+                            <rect x="28" y="40" width="3" height="8" fill="#666"/>
+                            <circle cx="29.5" cy="38" r="2" fill="#999"/>
+                            <!-- 軌道 -->
+                            <line x1="10" y1="75" x2="90" y2="75" stroke="#333" stroke-width="2"/>
+                            <line x1="15" y1="78" x2="85" y2="78" stroke="#333" stroke-width="1"/>
+                        </svg>
+                        台南火車站
+                    </div>
+                    <div class="stop-desc">返程，結束美好的台南之旅。</div>
+                </div>
+            </div>
+            <!-- 行前提醒 -->
+            <div class="reminder-section">
+                <div class="reminder-title">⚠️ 行前提醒</div>
+                <div class="reminder-item"><strong>天氣：</strong>陽光普照，溫度約 28-32℃，建議帶防曬</div>
+                <div class="reminder-item"><strong>要帶的東西：</strong>防曬乳、遮陽帽、舒服的鞋子、水瓶、相機</div>
+                <div class="reminder-item"><strong>集合時間：</strong>親愛的太座，上午 10:00 於台南火車站前廣場集合 ❤️</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>✨ 店名和時間為示意，實際安排可根據臨時調整</p>
+        </div>
+    </div>
+
+    <script>
+        // 深色模式切換功能
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        const THEME_KEY = 'theme-preference';
+
+        // 初始化主題
+        function initTheme() {
+            const savedTheme = localStorage.getItem(THEME_KEY);
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+            setTheme(theme);
+        }
+
+        // 設置主題
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                body.setAttribute('data-theme', 'dark');
+                themeToggle.textContent = '☀️';
+                localStorage.setItem(THEME_KEY, 'dark');
+            } else {
+                body.removeAttribute('data-theme');
+                themeToggle.textContent = '🌙';
+                localStorage.setItem(THEME_KEY, 'light');
+            }
+        }
+
+        // 切換主題
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        });
+
+        // 頁面載入時初始化主題
+        initTheme();
+    </script>
+
+    <script>
+        // 示意的出發日期（修改此日期來改變"今日"的定義）
+        const tripStartDate = new Date(2024, 10, 15); // 示意：2024年11月15日出發
+        const today = new Date();
+
+        // 計算是第幾天
+        const timeDiff = today - tripStartDate;
+        const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+        let todayContent = '';
+
+        if (dayDiff === 0) {
+            // 第一天
+            todayContent = '<strong>🌅 第一天行程</strong><br>10:00 台南火車站集合 → 11:30 安平古街 → 13:30 海鮮午餐 → 15:00 豆皮小食 → 17:30 晚餐享夕陽';
+        } else if (dayDiff === 1) {
+            // 第二天
+            todayContent = '<strong>☀️ 第二天行程</strong><br>08:00 台南早餐 → 09:30 孔廟古蹟 → 12:00 特色午餐 → 14:30 文創逛街 → 16:30 返程';
+        } else {
+            todayContent = '✨ 點下面查看詳細行程';
+        }
+
+        document.getElementById('todaySchedule').innerHTML = todayContent;
+    </script>
+</body>
+</html>
