@@ -248,6 +248,75 @@
             color: #8899ff;
         }
 
+        .today-todo {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            margin: 20px;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.2);
+            transition: background 0.3s ease;
+        }
+
+        body[data-theme="dark"] .today-todo {
+            background: linear-gradient(135deg, #2d5016 0%, #1b3a1b 100%);
+        }
+
+        .todo-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 14px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .todo-title {
+            color: #66bb6a;
+        }
+
+        .todo-list {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 14px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        body[data-theme="dark"] .todo-list {
+            background: #222222;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            font-size: 15px;
+            color: #333;
+            transition: color 0.3s ease, opacity 0.3s ease;
+        }
+
+        body[data-theme="dark"] .todo-item {
+            color: #ffffff;
+        }
+
+        .todo-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            flex-shrink: 0;
+            accent-color: #4caf50;
+        }
+
+        .todo-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        body[data-theme="dark"] .todo-item.completed {
+            color: #888888;
+        }
+
         .reminder-section {
             background: #fff3cd;
             border-left: 4px solid #ffc107;
@@ -347,6 +416,13 @@
             <div class="highlight-title">📍 今日重點</div>
             <div class="highlight-content" id="todayContent">
                 <p id="todaySchedule">點進來看詳細行程 👇</p>
+            </div>
+        </div>
+
+        <div class="today-todo">
+            <div class="todo-title">✅ 今日待做</div>
+            <div class="todo-list" id="todoList">
+                <!-- 動態生成 -->
             </div>
         </div>
 
@@ -654,6 +730,25 @@
         const timeDiff = today - tripStartDate;
         const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 
+        // 第一天和第二天的行程
+        const schedules = {
+            0: [
+                { time: '10:00', place: '台南火車站' },
+                { time: '11:30', place: '安平古街' },
+                { time: '13:30', place: '海鮮島水產活物' },
+                { time: '15:00', place: '義發豆腐豆漿工廠' },
+                { time: '17:30', place: '觀夕平台' }
+            ],
+            1: [
+                { time: '08:00', place: '陳家豆漿（早點）' },
+                { time: '09:30', place: '孔廟與古蹟群' },
+                { time: '12:00', place: '慶平海產' },
+                { time: '14:30', place: '藍晒圖文創園區' },
+                { time: '16:30', place: '台南火車站' }
+            ]
+        };
+
+        // 更新「今日重點」
         let todayContent = '';
 
         if (dayDiff === 0) {
@@ -667,6 +762,62 @@
         }
 
         document.getElementById('todaySchedule').innerHTML = todayContent;
+
+        // 生成今日待做清單
+        function renderTodoList() {
+            const todoList = document.getElementById('todoList');
+
+            if (dayDiff === 0 || dayDiff === 1) {
+                const todaySchedule = schedules[dayDiff];
+                const TODO_KEY = `todo-day-${dayDiff}`;
+                const savedTodos = JSON.parse(localStorage.getItem(TODO_KEY) || '{}');
+
+                todoList.innerHTML = '';
+
+                todaySchedule.forEach((item, index) => {
+                    const itemId = `${dayDiff}-${index}`;
+                    const isCompleted = savedTodos[itemId] || false;
+
+                    const todoItem = document.createElement('div');
+                    todoItem.className = `todo-item ${isCompleted ? 'completed' : ''}`;
+                    todoItem.id = `todo-${itemId}`;
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.checked = isCompleted;
+                    checkbox.dataset.itemId = itemId;
+                    checkbox.dataset.dayKey = TODO_KEY;
+
+                    const label = document.createElement('span');
+                    label.textContent = `${item.time} ${item.place}`;
+
+                    checkbox.addEventListener('change', (e) => {
+                        const key = e.target.dataset.dayKey;
+                        const id = e.target.dataset.itemId;
+                        const todos = JSON.parse(localStorage.getItem(key) || '{}');
+                        todos[id] = e.target.checked;
+                        localStorage.setItem(key, JSON.stringify(todos));
+
+                        // 更新UI
+                        const todoElement = document.getElementById(`todo-${id}`);
+                        if (e.target.checked) {
+                            todoElement.classList.add('completed');
+                        } else {
+                            todoElement.classList.remove('completed');
+                        }
+                    });
+
+                    todoItem.appendChild(checkbox);
+                    todoItem.appendChild(label);
+                    todoList.appendChild(todoItem);
+                });
+            } else {
+                todoList.innerHTML = '<p style="color: #999; text-align: center; padding: 10px;">旅程已結束 ✨</p>';
+            }
+        }
+
+        // 頁面載入時渲染待做清單
+        renderTodoList();
     </script>
 </body>
 </html>
